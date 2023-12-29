@@ -8,5 +8,6 @@ let explode str =
   aux ((String.length str) - 1) Nils
 
 let rec map f strm = match strm with 
-| Nils -> () 
-| Cons r -> f r.head; map f r.rest
+| Nils -> Nils
+| Cons r -> if f r.head then map f r.rest else r.rest
+

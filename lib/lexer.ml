@@ -32,10 +32,11 @@ let keyword_of s = match s with
 
 type database = { code : string; tokens: token}
 
+
 let (@|) g f = fun c -> g c || f c
 let (@&) g f = fun c -> g c && f c
 let (%) f c =  if f c then 1 else 0
-let (<<) l n =  String.get l n
+let (=>) a b = !a.(b)
 
 let contains l e = List.exists ((=) e) l
 
@@ -77,24 +78,26 @@ let print t = match t with
 | BinaryOp x -> Printf.printf "BinOp : %s\n" x
 | _ -> ()
 
-let split code = 
-  let rec aux strm cond s cse p = match strm with 
-  | Utils.Nils -> print (cond.finish s cse)
-  | Utils.Cons r -> 
+let current_token = ref Undefined
+let current_cond = ref (List.nth condition_list 0)
+let rest = ref Utils.Nils
+let init code = rest := Utils.explode code
+let next_token = fun () ->
+  let rec aux strm s p cse = 
+    match strm with 
+    | Utils.Cons x ->
+      let case = !current_cond.resume x.head p in
+      if case = 0 then
+        let () = current_token := !current_cond.finish s cse in 
+        let () = current_cond := List.find (fun e -> e.start x.head) condition_list in
+        Utils.Cons x
+      else
+        aux x.rest (s ^ string_of_char x.head) (p + 1) cse
+
+    | Utils.Nils -> 
+      if s = "" then current_token := EOF else
+      current_token := !current_cond.finish s cse; Utils.Nils
     
-    let c = r.head and re = r.rest in
-    let case = cond.resume c p in
-    if case = 0 then 
-      (* finish the previous *)
-      let t = cond.finish s cse in
-      print t;
-      (* resume the next *)
-      let opt = condition_list |> List.find_opt (fun ele -> ele.start c) in
-      match opt with
-      | None -> failwith "Unexpected character"
-      | Some cond' -> aux strm cond' "" 0 0
-    else 
-      (* consume *)
-      aux re cond (s ^ string_of_char c) case (p + 1)
   in
-  (code |> Utils.explode |> aux) (List.nth condition_list 0) "" 0 0
+  let r = aux !rest "" 0 0 in
+  rest := r
