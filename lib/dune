@@ -1,4 +1,5 @@
 (library
  (name Descript)
+ (libraries llvm ppx_deriving camlp5)
  (preprocess (pps ppx_deriving.show ppx_deriving.ord))
  )

@@ -19,7 +19,7 @@
  (name descript)
  (synopsis "A short synopsis")
  (description "A longer description")
- (depends ocaml dune ocamlformat llvm ppx_deriving)
+ (depends ocaml dune ocamlformat llvm ppx_deriving camlp5)
  (tags
   (topics "to describe" your project)))
 

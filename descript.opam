@@ -15,6 +15,7 @@ depends: [
   "ocamlformat"
   "llvm"
   "ppx_deriving"
+  "camlp5"
   "odoc" {with-doc}
 ]
 build: [
