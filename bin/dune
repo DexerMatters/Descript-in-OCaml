@@ -1,5 +1,4 @@
 (executable
  (public_name descript)
  (name main)
- (preprocess (pps ppx_deriving.show ppx_deriving.ord))
  (libraries Descript ppx_deriving camlp5))

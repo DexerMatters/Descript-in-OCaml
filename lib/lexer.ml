@@ -1,3 +1,5 @@
+open Stream
+
 type keyword = Let | If | Else | Return | Break| Fun | Flow | Match
 type token = 
   Keyword of keyword
